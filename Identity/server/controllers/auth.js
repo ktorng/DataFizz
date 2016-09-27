@@ -16,7 +16,7 @@ function checkExistingEmail(email) {
   });
 }
 
-function signup(req, res, next) {
+function signup(req, res) {
   const username = req.body.username;
   const email = req.body.email
   const password = req.body.password;
