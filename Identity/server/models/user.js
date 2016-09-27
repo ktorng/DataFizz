@@ -7,11 +7,6 @@ const SALT_WORK_FACTOR = 10;
 
 // define model
 var userSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true
-  },
   email: {
     type: String,
     required: true,
@@ -39,7 +34,7 @@ userSchema.pre('save', function(next) {
   // override the cleartext password with the hashed one
   .then((hash) => {
     user.password = hash;
-    console.log(user.username, ' saved')
+    console.log(user.email, ' saved')
     next();
   })
   .catch((err) => {

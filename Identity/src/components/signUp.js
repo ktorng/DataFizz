@@ -4,6 +4,8 @@ import { TextField } from 'redux-form-material-ui';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 
+import { signUp } from '../actions/actions';
+
 
 // client side validation
 const validate = (values) => {
@@ -28,10 +30,19 @@ const validate = (values) => {
 };
 
 class SignUp extends Component {
+  constructor(props) {
+    super(props);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  onSubmit(formData) {
+    this.props.signUp(formData);
+  }
+
   render() {
     const { handleSubmit, pristine, reset, submitting } = this.props;
     return (
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(this.onSubmit)}>
         <div>
           <Field
             name="email"
@@ -64,13 +75,13 @@ class SignUp extends Component {
   }
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) => ({
+  error: state.auth.error,
+});
 
-};
-
-const mapDispatchToProps = (dispatch) => {
-
-};
+const mapDispatchToProps = (dispatch) => (
+  bindActionCreators({ signUp }, dispatch);
+);
 
 export default reduxForm({
   form: 'SignUpForm',

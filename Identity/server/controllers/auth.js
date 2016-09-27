@@ -1,7 +1,7 @@
 var User = require('../models/user');
 
 module.exports = {
-  signup
+  signUp
 }
 
 function checkExistingEmail(email) {
@@ -16,11 +16,9 @@ function checkExistingEmail(email) {
   });
 }
 
-function signup(req, res) {
-  const username = req.body.username;
+function signUp(req, res) {
   const email = req.body.email
   const password = req.body.password;
-
 
   // see if email already exists
   checkExistingEmail(email)
@@ -31,7 +29,6 @@ function signup(req, res) {
     // create new user if email does not exist
     } else {
       const newUser = new User({
-        username,
         email,
         password
       })
@@ -44,6 +41,6 @@ function signup(req, res) {
     }
   })
   .catch((err) => {
-    res.status(500).send({ error: 'An error occurred during signup' });
+    res.status(500).send({ error: 'An error occurred during sign up' });
   })
 }
