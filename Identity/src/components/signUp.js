@@ -1,86 +1,78 @@
-import React from 'react';
-import TextField from 'material-ui/TextField';
-import Divider from 'material-ui/Divider';
+import React, { Component } from 'react';
+import { Field, reduxForm } from 'redux-form';
+import { TextField } from 'redux-form-material-ui';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 
-// Signup component
-export default class SignUp extends React.Component {
-  constructor(props) {
-    super(props);
 
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this);
-    this.submitSignUp = this.submitSignUp.bind(this);
-    this.closeNotification = this.closeNotification.bind(this);
+// client side validation
+const validate = (values) => {
+  const errors = {};
+  const requiredFields = ['email', 'password', 'password2'];
+  requiredFields.forEach((field) => {
+    if (!values[field] || values[field].trim() === '') {
+      errors[field] = 'Required';
+    }
+  });
+  if (values.email && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    errors.email = 'Invalid email address';
+  }
+  if (values.password && values.password.length < 8) {
+    errors.password = 'Password must be at least 8 characters';
+  }
+  if (values.password && values.password2 && values.password !== values.password2) {
+    errors.password2 = 'Password does not match';
   }
 
-  // validate email
+  return errors;
+};
 
-  handleEmailChange() {
-
-  }
-
-  handlePasswordChange() {
-
-  }
-
-  handleConfirmPasswordChange() {
-
-  }
-
-  submitSignUp() {
-
-  }
-
-  closeNotification() {
-
-  }
-
+class SignUp extends Component {
   render() {
-    const emailError = '';
-    const passwordError = '';
-    const open = true;
-    const message = 'snackbar message';
-
+    const { handleSubmit, pristine, reset, submitting } = this.props;
     return (
-      <div className="signup">
-        <TextField
-          className="email-field"
-          onChange={this.handleEmailChange}
-          floatingLabelText="Email"
-          errorText={emailError}
-        />
-        <Divider />
-        <TextField
-          className="password-field"
-          type="password"
-          onChange={this.handlePasswordChange}
-          floatingLabelText="Password"
-        />
-        <Divider />
-        <TextField
-          className="password-field"
-          type="password"
-          onChange={this.handleConfirmPasswordChange}
-          floatingLabelText="Re-enter Password"
-          errorText={passwordError}
-        />
-        <Divider />
-        <RaisedButton
-          className="signup-submit"
-          onClick={this.submitSignUp}
-          label="Sign Up"
-          primary={true}
-        />
-        <Snackbar
-          open={open}
-          message={message}
-          autoHideDuration={3000}
-          onRequestClose={this.closeNotification}
-        />
-      </div>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <Field
+            name="email"
+            component={TextField}
+            floatingLabelText="Email"
+          />
+        </div>
+        <div>
+          <Field
+            name="password"
+            type="password"
+            component={TextField}
+            floatingLabelText="Password"
+          />
+        </div>
+        <div>
+          <Field
+            name="password2"
+            type="password"
+            component={TextField}
+            floatingLabelText="Confirm Password"
+          />
+        </div>
+        <div>
+          <button type="submit" disabled={pristine || submitting}>submit</button>
+          <button type="button" disabled={pristine || submitting} onClick={reset}>clear values</button>
+        </div>
+      </form>
     );
   }
-}
+};
+
+const mapStateToProps = (state) => {
+
+};
+
+const mapDispatchToProps = (dispatch) => {
+
+};
+
+export default reduxForm({
+  form: 'SignUpForm',
+  validate
+}, mapStateToProps, mapDispatchToProps)(SignUp);
