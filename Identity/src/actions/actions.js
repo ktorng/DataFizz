@@ -1,23 +1,48 @@
 import axios from 'axios';
 import { browserHistory } from 'react-router';
+import cookie from 'react-cookie';
 
-export const LOG_IN = 'LOG_IN';
-export const LOG_OUT = 'LOG_OUT';
+export const AUTH_USER = 'AUTH_USER';
+export const UNAUTH_USER = 'UNAUTH_USER';
 export const AUTH_ERROR = 'AUTH_ERROR';
-export const HIDE_MESSAGE = 'HIDE_MESSAGE';
+export const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
+export const RESET_PASSWORD = 'RESET_PASSWORD';
 
-export function signUp(formData) {
+export function errorHandler(dispatch, error, type) {
+  let errorMessage = '';
+
+  if (error.data.error) {
+    errorMessage = error.data.error;
+  } else if (error.data) {
+    errorMessage = error.data;
+  } else {
+    errorMessage = error;
+  }
+
+  if (error.status === 401) {
+    dispatch({
+      type: type,
+      payload: 'You are not authorized to do this. Please login and try again.'
+    });
+    logout();
+  } else {
+    dispatch({
+      type: type,
+      payload: errorMessage
+    })
+  }
+}
+
+export function register(formData) {
   return function(dispatch) {
-    axios.post('/api/auth/signUp', formData)
+    axios.post('/api/auth/register', formData)
     .then((res) => {
-      dispatch({ type: LOG_IN, payload: res.data.message });
-      browserHistory.push('/profile');
+      cookie.save('token', res.data.token, { path: '/' });
+      dispatch({ type: AUTH_USER, payload: res.data.message });
+      browserHistory.push('/dashboard');
     })
     .catch((err) => {
-      const message = err.response ?
-        err.response.data.message :
-        'Error during signup';
-      dispatch(authError(message));
+      errorHandler(dispatch, err.response, AUTH_ERROR)
     });
   }
 }

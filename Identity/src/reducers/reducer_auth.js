@@ -15,13 +15,13 @@ export default function(state = INITIAL_STATE, action) {
     case LOG_IN: {
       return {
         ...state,
-        auth: true,
+        isAuthenticated: true,
         message: action.payload,
         showMessage: true
       };
     }
     case LOG_OUT: {
-      return { ...state, auth: false };
+      return { ...state, isAuthenticated: false };
     }
     case AUTH_ERROR: {
       return { ...state, message: action.payload, showMessage: true };
