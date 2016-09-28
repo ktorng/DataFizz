@@ -16,7 +16,7 @@ function checkExistingEmail(email) {
   });
 }
 
-function signUp(req, res) {
+function signUp(req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -25,7 +25,7 @@ function signUp(req, res) {
   .then((found) => {
     // return error if email exists
     if (found) {
-      res.status(422).send({ error: 'An account with this email already exists' });
+      res.status(422).send({ message: 'An account with this email already exists' });
     // create new user if email does not exist
     } else {
       const newUser = new User({
@@ -36,11 +36,11 @@ function signUp(req, res) {
       // save user to db
       newUser.save((err) => {
         if (err) throw err;
-        return res.status(201).send({ message: 'You have successfully signed up' });
+        res.status(201).send({ message: 'You have successfully signed up' });
       });
     }
   })
   .catch((err) => {
-    res.status(500).send({ error: 'An error occurred during sign up' });
+    next(err);
   })
 }

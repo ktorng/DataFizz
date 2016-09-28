@@ -6,7 +6,7 @@ import { TextField } from 'redux-form-material-ui';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 
-import { signUp } from '../actions/actions';
+import { signUp, hideMessage } from '../actions/actions';
 
 
 // client side validation
@@ -67,17 +67,29 @@ class SignUp extends Component {
           <button type="submit" disabled={pristine || submitting}>submit</button>
           <button type="button" disabled={pristine || submitting} onClick={reset}>clear values</button>
         </div>
+        <Snackbar
+          open={this.props.showMessage}
+          message={this.props.message}
+          autoHideDuration={3000}
+          onRequestClose={this.props.hideMessage}
+        />
       </form>
     );
   }
 };
 
 function mapStateToProps(state) {
-  return { error: state.auth.error };
+  return {
+    message: state.auth.message,
+    showMessage: state.auth.showMessage
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ signUp }, dispatch);
+  return bindActionCreators({
+    signUp,
+    hideMessage
+  }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({

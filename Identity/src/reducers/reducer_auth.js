@@ -1,15 +1,33 @@
-import { LOG_IN, LOG_OUT, AUTH_ERROR } from '../actions/actions';
+import {
+  LOG_IN,
+  LOG_OUT,
+  AUTH_ERROR,
+  HIDE_MESSAGE
+} from '../actions/actions';
 
-export default function(state = {}, action) {
+const INITIAL_STATE = {
+  message: '',
+  showMessage: false
+}
+
+export default function(state = INITIAL_STATE, action) {
   switch (action.type) {
     case LOG_IN: {
-      return { ...state, auth: true };
+      return {
+        ...state,
+        auth: true,
+        message: action.payload,
+        showMessage: true
+      };
     }
     case LOG_OUT: {
       return { ...state, auth: false };
     }
     case AUTH_ERROR: {
-      return { ...state, error: action.payload };
+      return { ...state, message: action.payload, showMessage: true };
+    }
+    case HIDE_MESSAGE: {
+      return { ...state, showMessage: false };
     }
     default: {
       return state;
