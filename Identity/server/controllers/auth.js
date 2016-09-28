@@ -17,7 +17,7 @@ function checkExistingEmail(email) {
 }
 
 function signUp(req, res) {
-  const email = req.body.email
+  const email = req.body.email;
   const password = req.body.password;
 
   // see if email already exists
@@ -34,7 +34,7 @@ function signUp(req, res) {
       })
 
       // save user to db
-      user.save((err) => {
+      newUser.save((err) => {
         if (err) throw err;
         return res.status(201).send({ message: 'You have successfully signed up' });
       });

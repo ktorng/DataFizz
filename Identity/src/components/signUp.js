@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { TextField } from 'redux-form-material-ui';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
@@ -30,11 +32,6 @@ const validate = (values) => {
 };
 
 class SignUp extends Component {
-  constructor(props) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
   onSubmit(formData) {
     this.props.signUp(formData);
   }
@@ -42,7 +39,7 @@ class SignUp extends Component {
   render() {
     const { handleSubmit, pristine, reset, submitting } = this.props;
     return (
-      <form onSubmit={handleSubmit(this.onSubmit)}>
+      <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
         <div>
           <Field
             name="email"
@@ -75,15 +72,15 @@ class SignUp extends Component {
   }
 };
 
-const mapStateToProps = (state) => ({
-  error: state.auth.error,
-});
+function mapStateToProps(state) {
+  return { error: state.auth.error };
+}
 
-const mapDispatchToProps = (dispatch) => (
-  bindActionCreators({ signUp }, dispatch);
-);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ signUp }, dispatch);
+}
 
-export default reduxForm({
+export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
   form: 'SignUpForm',
   validate
-}, mapStateToProps, mapDispatchToProps)(SignUp);
+})(SignUp));
